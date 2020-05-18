@@ -1,8 +1,8 @@
 function makefield(){
   
   // cf: https://github.com/kaida-jyouma/picros/blob/master/picros.py
-  
-  var sheet = SpreadsheetApp.openById("17Dc6SsxZnCz3l2ESdSsRdBWutLgeF97-a4UNhYKG1ls").getSheets()[0];
+  var sid="17Dc6SsxZnCz3l2ESdSsRdBWutLgeF97-???????????";//paste spreadsheet_id
+  var sheet = SpreadsheetApp.openById(sid).getSheets()[0];
   var xlen = parseInt(sheet.getRange(5, 2).getValue());
   var ylen = parseInt(sheet.getRange(5, 4).getValue());
   if (xlen > 20 || ylen > 20){
@@ -11,7 +11,7 @@ function makefield(){
     for (i=0;i<20;i++){
       for (j=0;j<20;j++){
         sheet.getRange(13 + i, 13 + j).setValue(false);
-        SpreadsheetApp.openById("17Dc6SsxZnCz3l2ESdSsRdBWutLgeF97-a4UNhYKG1ls").getSheets()[1].getRange(13 + i, 13 + j).setBackground("#ffffff");
+        SpreadsheetApp.openById(sid).getSheets()[1].getRange(13 + i, 13 + j).setBackground("#ffffff");
       }
     }
     for (i=0;i<20;i++){
@@ -34,7 +34,7 @@ function makefield(){
     for (i=0;i<xlen;i++){
       for (j=0;j<ylen;j++){
         if (pic[i][j] === 1){
-          SpreadsheetApp.openById("17Dc6SsxZnCz3l2ESdSsRdBWutLgeF97-a4UNhYKG1ls").getSheets()[1].getRange(13+i, 13+j).setBackground("#808080");
+          SpreadsheetApp.openById(sid).getSheets()[1].getRange(13+i, 13+j).setBackground("#808080");
         }
       }
     }
