@@ -1,17 +1,19 @@
 function makefield(){
   
   // cf: https://github.com/kaida-jyouma/picros/blob/master/picros.py
-  var sid="17Dc6SsxZnCz3l2ESdSsRdBWutLgeF97-???????????";//paste spreadsheet_id
-  var sheet = SpreadsheetApp.openById(sid).getSheets()[0];
+  
+  var sheet = SpreadsheetApp.openById("17Dc6SsxZnCz3l2ESdSsRdBWutLgeF97-a4UNhYKG1ls").getSheets()[0];
   var xlen = parseInt(sheet.getRange(5, 2).getValue());
   var ylen = parseInt(sheet.getRange(5, 4).getValue());
   if (xlen > 20 || ylen > 20){
     Browser.msgBox("rangeError: please enter number under 20")
   }else{
+    sheet.getRange(7, 2).setValue(0);
     for (i=0;i<20;i++){
       for (j=0;j<20;j++){
         sheet.getRange(13 + i, 13 + j).setValue(false);
-        SpreadsheetApp.openById(sid).getSheets()[1].getRange(13 + i, 13 + j).setBackground("#ffffff");
+        sheet.getRange(13+i, 13+j).setBackground("#ffffff");
+        SpreadsheetApp.openById("17Dc6SsxZnCz3l2ESdSsRdBWutLgeF97-a4UNhYKG1ls").getSheets()[1].getRange(13 + i, 13 + j).setBackground("#ffffff");
       }
     }
     for (i=0;i<20;i++){
@@ -34,7 +36,7 @@ function makefield(){
     for (i=0;i<xlen;i++){
       for (j=0;j<ylen;j++){
         if (pic[i][j] === 1){
-          SpreadsheetApp.openById(sid).getSheets()[1].getRange(13+i, 13+j).setBackground("#808080");
+          SpreadsheetApp.openById("17Dc6SsxZnCz3l2ESdSsRdBWutLgeF97-a4UNhYKG1ls").getSheets()[1].getRange(13+i, 13+j).setBackground("#808080");
         }
       }
     }
@@ -80,5 +82,40 @@ function makefield(){
         sheet.getRange(12 - j, 13 + i).setValue(hint_x[i][hint_x[i].length - j - 1]);
       }
     }
+  }
+}
+function answers(){
+  // Browser.msgBox("Sorry, We can't do this option...")
+  var sheet1 = SpreadsheetApp.openById("17Dc6SsxZnCz3l2ESdSsRdBWutLgeF97-a4UNhYKG1ls").getSheets()[0];
+  var sheet2 = SpreadsheetApp.openById("17Dc6SsxZnCz3l2ESdSsRdBWutLgeF97-a4UNhYKG1ls").getSheets()[1];
+  var xlen = parseInt(sheet1.getRange(5, 2).getValue());
+  var ylen = parseInt(sheet1.getRange(5, 4).getValue());
+  if (xlen > 20 || ylen > 20){
+    Browser.msgBox("rangeError: please enter number under 20")
+  }else if (sheet1.getRange(13, 12).getValue() === "" || sheet1.getRange(12, 13).getValue() === ""){
+    Browser.msgBox("compareError: please solve picros");
+  }else{
+    sheet1.getRange('M13:AF32').protect().setDescription('protect_answers');
+    var pt = sheet1.getRange(5, 6).getValue();
+    for (i=0;i<xlen;i++){
+      for (j=0;j<ylen;j++){
+        if (sheet1.getRange(13+i, 13+j).getValue() === false && sheet2.getRange(13+i, 13+j).getBackground() === "#808080"){
+          sheet1.getRange(13+i, 13+j).setBackground("#ffa43d");
+          pt -= 1;
+        }else if (sheet1.getRange(13+i, 13+j).getValue() === true && sheet2.getRange(13+i, 13+j).getBackground() !== "#808080"){
+          sheet1.getRange(13+i, 13+j).setBackground("#ffe72e");
+          pt -= 1;
+        }
+      }
+    }
+    sheet1.getRange(7, 2).setValue(Math.floor(pt/sheet1.getRange(5, 6).getValue()*100));
+    var protections = sheet1.getProtections(SpreadsheetApp.ProtectionType.RANGE);
+    for (i = 0; i < protections.length; i++) {
+      var protection = protections[i];
+      if (protection.canEdit()) {
+        protection.remove();
+      }
+    }
+    sheet1.getRange(5, 4).protect().setDescription('protect_range');
   }
 }
